@@ -1,6 +1,7 @@
 import { useState, useEffect} from "react"
 import { FormEvent } from 'react'
 import { ChangeEvent} from 'react'
+import axios from 'axios'
 
 interface Tarefa{
     tarefa: string;
@@ -12,20 +13,25 @@ function App() {
   const [lista, setLista] = useState<Tarefa[]>([])
   const [tarefa, setTarefa] = useState<string>('')
   //const [statusLista, setStatusLista] = useState<number>(1)
+  const url = 'http://127.0.0.1:8000/api/'
   
   useEffect(() => {get()}, [])
 
   async function get(){
 
     try{
-      const resposta = await fetch('http://127.0.0.1:8000/api/')
-      let lista_usuarios = await resposta.json()
+      const response = await axios.get(url) //fetch(url)
+      //qualquer coisa errada levanta erro
 
-      console.table(lista_usuarios)
-      setLista(lista_usuarios)
+      //console.log(response.data)
+      //let lista_usuarios = await response.json()
+
+      console.table(response.data)
+      setLista(response.data)
 
     }catch(error){
       console.log('Erro ao buscar tarefas')
+      console.log(error)
     }
   }
 
@@ -40,20 +46,16 @@ function App() {
 
     try{
 
-      const resposta = await fetch('http://127.0.0.1:8000/api/', {
+      const resposta = await axios.post(url, nova_tarefa)/*fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
         body: JSON.stringify(nova_tarefa)
-      })
+      })*/
 
-      if (resposta.ok){
-        setTarefa('')
-        get()
-
-      } else {
-        const erro = await resposta.json()
-        console.log("Erro ao salvar", erro)
-      }
+      //A FUNÇÂO JÁ CONVERTE PARA JSON
+      
+      setTarefa('')
+      get()
 
     }catch(error){
       console.log('Erro de conexão com o servidor')
@@ -65,14 +67,13 @@ function App() {
 
       try{
 
-        let resposta = await fetch(`http://127.0.0.1:8000/api/${id}/`, {method : 'DELETE'})
+        let resposta = await axios.delete(url + `${id}/`) //fetch(url + `${id}/`, {method : 'DELETE'})
+        //qualquer erro o axios levanta erro
+        console.table(resposta.data)
+        get()
         
-        if (resposta.ok){
-          get()
-        } else {
-          console.log('Erro', resposta)
-        }
-
+        //console.log('Erro', resposta)
+        
       }catch(error){
         console.log('Erro ao tentar deletar', error)
       }
@@ -83,17 +84,15 @@ function App() {
 
     try{
 
-      const resposta = await fetch(`http://127.0.0.1:8000/api/${tarefa.id}/`, {
+      const novos_dados = { concluida : !tarefa.concluida}
+
+      const resposta = await axios.patch(url + `${tarefa.id}/`, novos_dados)/*fetch(url + `${tarefa.id}/`, {
         method: 'PATCH',
         headers: { 'Content-Type' : 'application/json'},
         body: JSON.stringify({ concluida : !tarefa.concluida})
-      })
+      })*/
 
-      if(resposta.ok){
-        get()
-      }else{
-        console.log('Erro ao mudar status')
-      }
+      get()
 
     }catch(error){
       console.log('Erro de conexão', error)
@@ -113,17 +112,14 @@ function App() {
         id : tarefa.id
       }
 
-      const resposta = await fetch(`http://127.0.0.1:8000/api/${tarefa.id}/`, {
+      const resposta = await axios.put(url + `${tarefa.id}/`, nova_tarefa)/*fetch(url + `{tarefa.id}/`, {
         headers: { 'Content-Type' : 'application/json'},
         body: JSON.stringify(nova_tarefa),
         method: 'PUT'
-      })
-
-      if (resposta.ok){
-        get()
-      } else {
-        console.log('Erro no put')
-      }
+      })*/
+     
+      get()
+  
 
     }catch( error ){
       console.log('Erro de conexão', error)
@@ -154,7 +150,7 @@ function App() {
 
           return (
           <li key={tarefa.id} style={style}>id: {tarefa.id} tarefa: {tarefa.tarefa}
-            <button onClick={() => tarefa.id && _delete(tarefa.id)}>Terminar Tarefa</button>
+            <button onClick={() => tarefa.id && _delete(tarefa.id)}>Excluir Tarefa</button>
             <button onClick={() => tarefa.id && _patch(tarefa)}>{tarefa.concluida? 'Reativar':'Terminar'}</button>
             <button onClick={() => _put(tarefa)}>Editar Tarefa</button>
           </li>
