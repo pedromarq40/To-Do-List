@@ -3,8 +3,8 @@ from .views import TarefaView
 from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
-router.register(r'api', TarefaView, basename='tarefa')
+router.register(r'tarefa', TarefaView, basename='tarefa')
 
 urlpatterns = [
-    path('', include(router.urls), name='criar_tarefa'),
+    path('', include(router.urls)),
 ]

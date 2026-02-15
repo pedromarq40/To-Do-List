@@ -6,6 +6,7 @@ class Tarefa(models.Model):
 
     tarefa = models.CharField(('tarefa'), max_length=50)
     concluida = models.BooleanField(('concluida'), default=False)
+    #usuario = models.ForeignKey(User, on_delete=models.CASCADE)
 
     @property
     def status(self):

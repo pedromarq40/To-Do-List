@@ -77,6 +77,12 @@ CORS_ALLOWED_ORIGINS = [ #DRF!
     "http://localhost:5173",
 ]
 
+REST_FRAMEWORK = { #JWT!
+    'DEFAULT_AUTHENTICATION_CLASSES' : (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
