@@ -1,11 +1,11 @@
 import { useState, FormEvent } from "react"
 import axios from 'axios'
-import { useNavigate } from "react-router-dom"
+import { useNavigate, Link } from "react-router-dom"
 
 function Login(){
 
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const [username, setUsername] = useState<string>('')
+    const [password, setPassword] = useState<string>('')
     const navigate = useNavigate()
     const url = 'http://127.0.0.1:8000/token/'
 
@@ -32,7 +32,9 @@ function Login(){
     }
     return(
     <>
+
     <div>
+      <Link to='/Cadastro'>Não tem cadastro?</Link>
       <h1>Login</h1>
       <form onSubmit={login}>
         

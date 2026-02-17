@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -6,7 +7,7 @@ class Tarefa(models.Model):
 
     tarefa = models.CharField(('tarefa'), max_length=50)
     concluida = models.BooleanField(('concluida'), default=False)
-    #usuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    usuario = models.ForeignKey(User, on_delete=models.CASCADE) #JWT
 
     @property
     def status(self):
